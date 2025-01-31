@@ -1,182 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shipment Live Tracking</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-            color: #333;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertical Order Tracking UI</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
-        .navbar {
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('https://img.freepik.com/free-photo/logistics-transportation-container-cargo-ship-cargo-plane-with-working-crane-bridge-shipyard-sunrise-logistic-import-export-transport-industry-background-ai-generative_123827-24177.jpg');
+      background-size: cover;
+      background-position: center;
+    }
 
-        .navbar h1 {
-            font-size: 20px;
-            margin: 0;
-        }
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .navbar ul {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-        }
+    .kinetic-text {
+      font-size: 30px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: slideIn 1s ease-in-out;
+    }
 
-        .navbar ul li {
-            margin: 0 10px;
-        }
+    .order-tracking {
+      width: 300px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
 
-        .navbar ul li a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
 
-        .hero {
-            text-align: center;
-            padding: 100px 20px;
-            background-image: url('https://media-hosting.imagekit.io//7b8d5f7c26a64c67/%E2%80%94Pngtree%E2%80%94cartoon%20style%203d%20render%20of_3754524.jpg?Expires=1831685735&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=KWWKE-btXcZ8ZkhmyhDy0CRAxEsS-NH4~9RwVmUxLNtMTd0zcOBrHABEnG~2VU919~Y5YU1U~6N8Np7n9sy2HZ1EvieofpR6j87S~xYWVF6T2DzNzac7TOiPmuiFphlfIe3Jc3z6eK53gaike6IglENLV83bsMonZV99TA3qAv0i0e2Sc3hT9R6qwRlhDBeZL25JHiumyEg2Ofa38dkOmXVo5RMgAdDq12~B50r5cEsuX-dbcSRUyZ6fNUStnD0a4rSQei-YaL7iOSaL--hQlgY~qnJzPNnlc51NmSncbibIWfIZXGvPdBdaMI5dz60OudLr8ebZOOc6i6ShyfzEZA__');
-            background-size: cover;
-            background-position: center;
-            color: #fff;
-        }
+    .input-field:focus {
+      border-color: #00acc1;
+      outline: none;
+    }
 
-        .hero h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
+    .btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      background: linear-gradient(45deg, #00acc1, #00838f);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
 
-        .hero p {
-            font-size: 18px;
-        }
+    .btn:hover {
+      background: linear-gradient(45deg, #00838f, #00acc1);
+    }
 
-        .tracker {
-            max-width: 800px;
-            margin: 30px auto;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .error-message {
+      color: #e53935;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
 
-        .tracker h3 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    @media (max-width: 600px) {
+      .order-tracking {
+        width: 90%;
+        padding: 15px;
+      }
 
-        .tracker form {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
+      .kinetic-text {
+        font-size: 24px;
+      }
 
-        .tracker input {
-            padding: 10px;
-            width: 70%;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .tracker button {
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .tracker button:hover {
-            background-color: #555;
-        }
-
-        .status {
-            margin-top: 20px;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        footer p {
-            margin: 0;
-        }
-    </style>
+      .btn {
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>Shipment Tracker</h1>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </div>
+  <div class="kinetic-text">Fast | Reliable | Secure</div>
+  
+  <div class="order-tracking">
+    <h3>Enter Tracking Code</h3>
+    <input type="text" id="trackingCode" class="input-field" placeholder="Enter Code...">
+    <button class="btn" onclick="checkCode()">Track</button>
+    <p id="error-message" class="error-message">Invalid code. Please try again.</p>
+  </div>
 
-    <div class="hero">
-        <h2>Track Your Shipment in Real-Time</h2>
-        <p>Know where your package is at any time, from anywhere in the world.</p>
-    </div>
-
-    <div class="tracker">
-        <h3>Enter Your Tracking Number</h3>
-        <form id="tracking-form">
-            <input type="text" id="tracking-number" placeholder="e.g., 1Z12345E" required>
-            <button type="submit">Track</button>
-        </form>
-        <div id="tracking-status" class="status"></div>
-    </div>
-
-    <footer>
-        <p>&copy; 2025 Shipment Tracker. All Rights Reserved.</p>
-    </footer>
-
-    <script>
-        const form = document.getElementById('tracking-form');
-        const statusDiv = document.getElementById('tracking-status');
-
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const trackingNumber = document.getElementById('tracking-number').value;
-
-            if (!trackingNumber.trim()) {
-                statusDiv.textContent = 'Please enter a valid tracking number.';
-                return;
-            }
-
-            statusDiv.textContent = `Tracking package: ${trackingNumber}...`;
-
-            // Simulated response from a backend or API
-            setTimeout(() => {
-                const simulatedStatus = `Your package with tracking number ${trackingNumber} invalid tracking id .`;
-                statusDiv.textContent = simulatedStatus;
-            }, 2000);
-        });
-    </script>
+  <script>
+    function checkCode() {
+      var inputCode = document.getElementById("trackingCode").value;
+      var errorMessage = document.getElementById("error-message");
+      if (inputCode === "artofakash4143") {
+        window.location.href = "success.html";
+      } else {
+        errorMessage.style.display = "block";
+      }
+    }
+  </script>
 </body>
 </html>
