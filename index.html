@@ -1,130 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vertical Order Tracking UI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipment OTP Auth</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
-
     body {
-      font-family: 'Poppins', sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      background-color: #0a0a0a;
+      overflow: hidden;
+      color: #ccc;
+    }
+
+    .container {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
-      background-image: url('https://img.freepik.com/free-photo/logistics-transportation-container-cargo-ship-cargo-plane-with-working-crane-bridge-shipyard-sunrise-logistic-import-export-transport-industry-background-ai-generative_123827-24177.jpg');
-      background-size: cover;
-      background-position: center;
+      position: relative;
+      z-index: 1;
     }
 
-    @keyframes slideIn {
-      0% {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .title {
+      color: gold;
+      font-size: 2em;
+      margin-bottom: 1em;
+      text-shadow: 0 0 10px gold;
     }
 
-    .kinetic-text {
-      font-size: 30px;
-      font-weight: 700;
-      color: white;
-      text-transform: uppercase;
-      text-align: center;
+    .otp-slots {
+      display: flex;
+      gap: 10px;
       margin-bottom: 20px;
-      animation: slideIn 1s ease-in-out;
     }
 
-    .order-tracking {
-      width: 300px;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .otp-slot {
+      width: 40px;
+      height: 50px;
+      background: #1a1a1a;
+      border: 1px solid #555;
+      color: silver;
+      font-size: 1.5em;
       text-align: center;
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
+      line-height: 50px;
       border-radius: 5px;
-      transition: border-color 0.3s;
+      box-shadow: 0 0 5px #444;
     }
 
-    .input-field:focus {
-      border-color: #00acc1;
-      outline: none;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 10px;
-      font-size: 14px;
-      background: linear-gradient(45deg, #00acc1, #00838f);
-      color: white;
+    button {
+      padding: 10px 20px;
+      background: gold;
+      color: #111;
       border: none;
       border-radius: 5px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 10px;
+      box-shadow: 0 0 10px gold;
+      transition: transform 0.3s ease;
     }
 
-    .btn:hover {
-      background: linear-gradient(45deg, #00838f, #00acc1);
+    button:hover {
+      transform: scale(1.1);
     }
 
-    .error-message {
-      color: #e53935;
-      font-size: 14px;
-      margin-top: 10px;
-      display: none;
+    .sci-fi-text {
+      font-size: 0.9em;
+      margin-top: 20px;
+      color: silver;
+      text-align: center;
+      animation: flicker 4s infinite;
+      letter-spacing: 1px;
+      max-width: 600px;
     }
 
-    @media (max-width: 600px) {
-      .order-tracking {
-        width: 90%;
-        padding: 15px;
-      }
+    @keyframes flicker {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 0.4; }
+    }
 
-      .kinetic-text {
-        font-size: 24px;
-      }
-
-      .btn {
-        padding: 10px;
-      }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="kinetic-text">Fast | Reliable | Secure</div>
-  
-  <div class="order-tracking">
-    <h3>Enter Tracking Code</h3>
-    <input type="text" id="trackingCode" class="input-field" placeholder="Enter Code...">
-    <button class="btn" onclick="checkCode()">Track</button>
-    <p id="error-message" class="error-message">Invalid code. Please try again.</p>
+  <canvas id="particles"></canvas>
+  <div class="container">
+    <div class="title">Secure Shipment Code</div>
+    <div class="otp-slots" id="otpContainer">
+      <!-- 9 OTP slots -->
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+      <div class="otp-slot">-</div>
+    </div>
+    <button onclick="generateOTP()">Generate OTP</button>
+    <div class="sci-fi-text">
+      Authenticating shipment delivery request. Please validate the generated alphanumeric code to confirm access through the secured cyber-auth channel.
+    </div>
   </div>
 
   <script>
-    function checkCode() {
-      var inputCode = document.getElementById("trackingCode").value;
-      var errorMessage = document.getElementById("error-message");
-      if (inputCode === "artofakash4143") {
-        window.location.href = "success.html";
-      } else {
-        errorMessage.style.display = "block";
+    const predefinedOTP = "A9X3K7Q1Z"; // 9-character alphanumeric
+
+    function generateOTP() {
+      const slots = document.querySelectorAll('.otp-slot');
+      for (let i = 0; i < 9; i++) {
+        slots[i].textContent = predefinedOTP[i];
       }
     }
+
+    // Particle Animation Background
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 1.5;
+        this.speedY = 0.5 + Math.random();
+      }
+
+      update() {
+        this.y += this.speedY;
+        if (this.y > canvas.height) this.reset();
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.fill();
+      }
+    }
+
+    function initParticles(num) {
+      particles = [];
+      for (let i = 0; i < num; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles(100);
+    animateParticles();
   </script>
 </body>
 </html>
